@@ -18,6 +18,8 @@ $init = <<SCRIPT
   python-all python-qt4 python-twisted-conch libtool git tmux vim python-pip python-paramiko \
   python-sphinx
   pip install alabaster
+  apt-get install git
+  apt-get install maven
 SCRIPT
 
 $ovs = <<SCRIPT
