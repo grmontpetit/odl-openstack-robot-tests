@@ -71,22 +71,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         vb.name = servers["name"]
         vb.memory = servers["ram"]
       end # vb
+
       # Set guest environment variables
       controller = servers["controller"]
-      remote_ip = servers["remote_ip"]
-      remote_alias = servers["remote_alias"]
-      local_ip = servers["local_ip"]
       local_alias = servers["name"]
-      command1 = 'export REMOTE_IP=\"' + remote_ip + '\"'
-      command2 = 'export CONTROLLER=\"' + controller + '\"'
-      command3 = 'export REMOTE_ALIAS=\"' + remote_alias + '\"'
-      command4 = 'export LOCAL_IP=\"' + local_ip + '\"'
-      command5 = 'export LOCAL_ALIAS=\"' + local_alias + '\"'
+      local_ip = servers["local_ip"]
+      command1 = 'export CONTROLLER=\"' + controller + '\"'
+      command2 = 'export LOCAL_IP=\"' + local_ip + '\"'
       srv.vm.provision :shell, privileged: true, inline: 'echo ' + command1 + ' >> /etc/profile'
       srv.vm.provision :shell, privileged: true, inline: 'echo ' + command2 + ' >> /etc/profile'
-      srv.vm.provision :shell, privileged: true, inline: 'echo ' + command3 + ' >> /etc/profile'
-      srv.vm.provision :shell, privileged: true, inline: 'echo ' + command4 + ' >> /etc/profile'
-      srv.vm.provision :shell, privileged: true, inline: 'echo ' + command5 + ' >> /etc/profile'
       srv.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
       ## Copy ovs patch
