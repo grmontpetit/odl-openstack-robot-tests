@@ -42,6 +42,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       srv.ssh.forward_x11 = false
 
       ## puppet
+      if hostname == "ovs1" or hostname == "ovs2"
+      elsif hostname == "controller"
+      elsif hostname == "robot"
+      end
+
       srv.vm.provision "puppet" do |puppet|
         puppet.manifests_path = "puppet/manifests"
         puppet.manifest_file  = "site.pp"
