@@ -1,5 +1,3 @@
-node basenode {
-
   $base_packages = [
     "kernel-headers",
     "kernel-devel",
@@ -20,4 +18,3 @@ node basenode {
   package { $base_packages:
     ensure => installed,
   }
-}

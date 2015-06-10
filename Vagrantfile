@@ -48,11 +48,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
       ## puppet
       srv.vm.provision "puppet" do |puppet|
+        puppet.working_directory = "/vagrant/puppet"
         puppet.manifests_path = "puppet/manifests"
-        puppet.manifest_file  = "nodes/" + hostname + ".pp"
+        puppet.manifest_file  = hostname + ".pp"
         puppet.options = "--verbose --debug"
         puppet.facter = {
-          'ovs_version' => ovsversion
+          'ovsversion' => ovsversion
         }
       end # puppet
 

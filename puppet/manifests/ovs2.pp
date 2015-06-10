@@ -1,5 +1,3 @@
-node ovs1 {
-
   $base_packages = [
     "kernel-headers",
     "kernel-devel",
@@ -81,5 +79,3 @@ node ovs1 {
                   Exec["install_ovs"],
                ],
   }
-
-}

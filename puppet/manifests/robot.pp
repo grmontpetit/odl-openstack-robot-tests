@@ -1,5 +1,3 @@
-node controller {
-
   $base_packages = [
     "kernel-headers",
     "kernel-devel",
@@ -20,4 +18,3 @@ node controller {
   package { $base_packages:
     ensure => installed,
   }
-}
