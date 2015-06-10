@@ -23,6 +23,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       local_ip = servers["local_ip"]
       os = servers["box"]
       ram = servers["ram"]
+      if ENV['OVSVERSION'] == ""
+        ovsversion = "2.3.1"
+      else
+        ovsversion = ENV['OVSVERSION']
+      end
 
       srv.vm.box = os
       srv.vm.network "public_network", ip: local_ip
