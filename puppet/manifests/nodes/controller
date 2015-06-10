@@ -1,1 +1,3 @@
-node controller inherits controllernode {}
+node controller inherits controllernode {
+
+}

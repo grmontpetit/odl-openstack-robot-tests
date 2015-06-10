@@ -1,1 +1,3 @@
-node robot inherits robotnode {}
+node robot inherits robotnode {
+
+}
