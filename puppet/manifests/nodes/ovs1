@@ -1,0 +1,1 @@
+node ovs1 inherits servernode {}

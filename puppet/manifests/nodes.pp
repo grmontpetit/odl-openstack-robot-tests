@@ -1,13 +1,4 @@
 node basenode {
-    exec { "install-prereq"
-  sudo cd /root/
-  sudo wget http://openvswitch.org/releases/openvswitch-2.3.1.tar.gz -O /root/openvswitch-2.3.1.tar.gz
-  sudo mkdir -p /root/rpmbuild/SOURCES
-  sudo cp openvswitch-2.3.1.tar.gz /root/rpmbuild/SOURCES/
-  sudo rpmbuild -bb rhel/openvswitch.spec
-  sudo rpmbuild -bb rhel/openvswitch-kmod-rhel7.spec
-  sudo rpm -ivh /root/rpmbuild/RPMS/*.rpm
-    }
 
   $base_packages = [
     "kernel-headers",
@@ -84,5 +75,19 @@ node basenode {
                      Exec["extract_ovs"],
                    ],
   }
+}
+
+node servernode inherits basenode {
+
+  package { "mininet":
+    ensure => installed,
+    require => [
+                  Package["ovs_switch"],
+               ]
+  }
 
 }
+
+
+
+import 'nodes/*.pp'
