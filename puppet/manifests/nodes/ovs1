@@ -1,1 +1,1 @@
-node ovs1 inherits servernode {}
+node ovs1 inherits ovsnode {}

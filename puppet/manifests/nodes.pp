@@ -49,45 +49,23 @@ node basenode {
                ],
     creates => "/root/rpmbuild/SOURCES/README",
   }
-
-  exec { "build_ovs":
-    command     => "rpmbuild -bb rhel/openvswitch.spec",
-    cwd         => "/root/rpmbuild/SOURCES/ovs",
-    logoutput   => true,
-    loglevel    => verbose,
-    timeout     => 0,
-    creates     => "/root/openvswitch-common_2.3.0-1_amd64.deb",
-    require     => [
-                     Package[$base_packages],
-                     Exec["extract_ovs"],
-                   ],
-  }
-
-    exec { "build_ovs":
-    command     => "rpmbuild -bb rhel/openvswitch-kmod-rhel6.spec",
-    cwd         => "/root/rpmbuild/SOURCES/ovs",
-    logoutput   => true,
-    loglevel    => verbose,
-    timeout     => 0,
-    creates     => "/root/openvswitch-common_2.3.0-1_amd64.deb",
-    require     => [
-                     Package[$base_packages],
-                     Exec["extract_ovs"],
-                   ],
-  }
 }
 
-node servernode inherits basenode {
-
-  package { "mininet":
+node ovsnode inherits basenode {
+    package { "mininet":
     ensure => installed,
     require => [
                   Package["ovs_switch"],
                ]
   }
-
 }
 
+node controllernode inherits basenode {
+  
+}
 
+node robotnode inherits basenode {
+  
+}
 
 import 'nodes/*.pp'
