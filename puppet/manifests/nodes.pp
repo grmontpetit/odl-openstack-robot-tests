@@ -14,15 +14,24 @@ node basenode {
     "rpm-build",
     "redhat-rpm-config",
     "libtool git",
-    "rpm-build",
-    "openssl-devel"
+    "git"
   ]
 
   package { $base_packages:
     ensure => installed,
   }
+}
 
-  file { "/root/rpmbuild/SOURCES"
+node ovsnode inherits basenode {
+
+  package { "mininet":
+    ensure => installed,
+    require => [
+                  Package["ovs_switch"],
+               ]
+  }
+
+    file { "/root/rpmbuild/SOURCES"
     ensure => diretory,
   }
 
@@ -48,15 +57,6 @@ node basenode {
                   Exec["download_ovs"],
                ],
     creates => "/root/rpmbuild/SOURCES/README",
-  }
-}
-
-node ovsnode inherits basenode {
-    package { "mininet":
-    ensure => installed,
-    require => [
-                  Package["ovs_switch"],
-               ]
   }
 }
 
