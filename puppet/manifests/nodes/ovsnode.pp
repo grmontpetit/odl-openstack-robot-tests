@@ -1,4 +1,5 @@
 node ovsnode inherits basenode {
+
   package { "mininet":
     ensure => installed,
     require => [
