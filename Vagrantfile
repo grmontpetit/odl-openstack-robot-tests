@@ -49,7 +49,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ## puppet
       srv.vm.provision "puppet" do |puppet|
         puppet.manifests_path = "puppet/manifests"
-        puppet.manifest_file  = "nodes/" + hostame + ".pp"
+        puppet.manifest_file  = "nodes/" + hostname + ".pp"
         puppet.options = "--verbose --debug"
       end# puppet
 
