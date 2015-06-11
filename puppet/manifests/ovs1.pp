@@ -20,73 +20,86 @@
     ensure => installed,
   }
 
+  exec { "mksource":
+    command => "/bin/mkdir -p /rpmbuild/SOURCES/",
+    cwd     => "/",
+  }
+
   file { [
-           "/root/rpmbuild/",
-           "/root/rpmbuild/SOURCES/",
+           "/rpmbuild/",
+           "/rpmbuild/SOURCES/",
          ]:
     ensure => directory,
   }
 
   exec { "download_ovs":
-    command => "wget http://openvswitch.org/releases/openvswitch-${ovsversion}.tar.gz",
-    cwd     => "/usr/bin",
+    command => "wget http://openvswitch.org/releases/openvswitch-${ovsversion}.tar.gz -O /root/openvswitch-${ovsversion}.tar.gz",
     creates => "/root/openvswitch-${ovsversion}.tar.gz",
-    path    => "/root",
+    cwd    => "/root",
+    path    => ["/bin", "/usr/bin"],
+  }
+
+  exec { "check_presence":
+    command => "true",
+    onlyif  => "/usr/bin/test -e /rpmbuild/SOURCES",
+    path    => ["/bin", "/usr/bin"],
   }
 
   exec { "copy_archive":
-    command => "cp openvswitch-${ovsversion}.tar.gz rpmbuild/SOURCES/openvswitch-${ovsversion}.tar.gz",
-    cwd     => "/bin",
+    command => "cp /root/openvswitch-${ovsversion}.tar.gz /rpmbuild/SOURCES/openvswitch-${ovsversion}.tar.gz",
     require => [
+                  Exec["mksource"],
                   Exec["download_ovs"],
+                  Exec["check_presence"],
                ],
-    path    => "/root",
-    creates => "/root/rpmbuild/SOURCES/openvswitch-${ovsversion}.tar.gz",
+    cwd    => "/root",
+    creates => "/rpmbuild/SOURCES/openvswitch-${ovsversion}.tar.gz",
+    path    => ["/bin", "/usr/bin"],
   }
 
   exec { "extract_ovs":
-    command => "/bin/tar xvfz /root/openvswitch-${ovsversion}.tar.gz -C /root/",
-    cwd     => "/usr/bin",
+    command => "tar xvfz /root/openvswitch-${ovsversion}.tar.gz",
     require => [
                   Exec["copy_archive"],
                ],
-    path => "/root",
+    path    => ["/bin", "/usr/bin"],
+    cwd     => "/root",
     creates => "/root/openvswitch-${ovsversion}/README",
   }
 
   exec { "custom_sed":
-    command => "/usr/bin/sed 's/openvswitch-kmod, //g' /root/openvswitch-${ovsversion}/rhel/openvswitch.spec > /root/openvswitch-${ovsversion}/rhel/openvswitch_no_kmod.spec",
-    cwd     => "/usr/bin",
+    command => "sed 's/openvswitch-kmod, //g' /root/openvswitch-${ovsversion}/rhel/openvswitch.spec > /root/openvswitch-${ovsversion}/rhel/openvswitch_no_kmod.spec",
     require => [
                   Exec["extract_ovs"],
                ],
-    path => "/root",
+    cwd => "/root",
+    path    => ["/bin", "/usr/bin"],
   }
 
   exec { "build_ovs":
-    command => "/usr/bin/rpmbuild -bb --nocheck /root/openvswitch-${ovsversion}/rhel/openvswitch_no_kmod.spec",
-    cwd     => "/root",
+    command => "rpmbuild -bb --nocheck /root/openvswitch-${ovsversion}/rhel/openvswitch_no_kmod.spec",
+    cwd => "/root",
+    path    => ["/bin", "/usr/bin"],
     require => [
                   Exec["custom_sed"],
                ],
-    path => "/root",
     creates => "/root/rpmbuild/RPMS/x86_64/openvswitch-${ovsversion}-1.x86_64.rpm",
   }
 
     exec { "install_ovs":
     command => "yum localinstall /root/rpmbuild/RPMS/x86_64/openvswitch-${ovsversion}-1.x86_64.rpm",
-    cwd     => "/usr/bin",
-    path => "/root",
+    cwd => "/root",
+    path    => ["/bin", "/usr/bin"],
     require => [
                   Exec["build_ovs"],
                ],
   }
 
   exec { "start_ovs":
-    command => "systemctl start openvswitch.service",
-    cwd     => "/usr/bin",
+    command => "/bin/systemctl start openvswitch.service",
     require => [
                   Exec["install_ovs"],
                ],
-    path => "/root",
+    cwd => "/root",
+    path    => ["/bin", "/usr/bin"],
   }
