@@ -20,20 +20,23 @@
     ensure => installed,
   }
 
-  file { "/root/rpmbuild/SOURCES/":
+  file { [
+           "/root/rpmbuild/",
+           "/root/rpmbuild/SOURCES/",
+         ]:
     ensure => directory,
   }
 
   exec { "download_ovs":
-    command => "/usr/bin/wget http://openvswitch.org/releases/openvswitch-${ovsversion}.tar.gz",
-    cwd     => "/root",
+    command => "wget http://openvswitch.org/releases/openvswitch-${ovsversion}.tar.gz",
+    cwd     => "/usr/bin",
     creates => "/root/openvswitch-${ovsversion}.tar.gz",
     path    => "/root",
   }
 
   exec { "copy_archive":
-    command => "/bin/cp openvswitch-${ovsversion}.tar.gz rpmbuild/SOURCES/",
-    cwd     => "/root",
+    command => "cp openvswitch-${ovsversion}.tar.gz rpmbuild/SOURCES/openvswitch-${ovsversion}.tar.gz",
+    cwd     => "/bin",
     require => [
                   Exec["download_ovs"],
                ],
@@ -42,8 +45,8 @@
   }
 
   exec { "extract_ovs":
-    command => "tar xvfz openvswitch-${ovsversion}.tar.gz -C openvswitch-${ovsversion}",
-    cwd     => "/root",
+    command => "/bin/tar xvfz /root/openvswitch-${ovsversion}.tar.gz -C /root/",
+    cwd     => "/usr/bin",
     require => [
                   Exec["copy_archive"],
                ],
@@ -53,7 +56,7 @@
 
   exec { "custom_sed":
     command => "sed 's/openvswitch-kmod, //g' openvswitch-${ovsversion}/rhel/openvswitch.spec > openvswitch-${ovsversion}/rhel/openvswitch_no_kmod.spec",
-    cwd     => "/root",
+    cwd     => "/usr/bin",
     require => [
                   Exec["extract_ovs"],
                ],
@@ -72,7 +75,7 @@
 
     exec { "install_ovs":
     command => "yum localinstall rpmbuild/RPMS/x86_64/openvswitch-${ovsversion}-1.x86_64.rpm",
-    cwd     => "/root",
+    cwd     => "/usr/bin",
     path => "/root",
     require => [
                   Exec["build_ovs"],
@@ -81,7 +84,7 @@
 
   exec { "start_ovs":
     command => "systemctl start openvswitch.service",
-    cwd     => "/root",
+    cwd     => "/usr/bin",
     require => [
                   Exec["install_ovs"],
                ],
