@@ -21,7 +21,7 @@
   }
 
   file { "/root/rpmbuild/SOURCES/":
-    ensure => diretory,
+    ensure => directory,
   }
 
   exec { "download_ovs":
