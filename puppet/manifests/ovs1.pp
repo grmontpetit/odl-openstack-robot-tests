@@ -83,14 +83,12 @@
     require => [
                   Exec["custom_sed"],
                ],
-    logoutput   => true,
-    refreshonly => true,
     timeout     => 0,
     creates => "/root/rpmbuild/RPMS/x86_64/openvswitch-${ovsversion}-1.x86_64.rpm",
   }
 
-    exec { "install_ovs":
-    command => "yum localinstall /root/rpmbuild/RPMS/x86_64/openvswitch-${ovsversion}-1.x86_64.rpm",
+  exec { "install_ovs":
+    command => "yum localinstall -y /rpmbuild/RPMS/x86_64/openvswitch-${ovsversion}-1.x86_64.rpm",
     cwd => "/root",
     path    => ["/bin", "/usr/bin"],
     require => [
@@ -99,7 +97,7 @@
   }
 
   exec { "start_ovs":
-    command => "/bin/systemctl start openvswitch.service",
+    command => "systemctl start openvswitch.service",
     require => [
                   Exec["install_ovs"],
                ],
