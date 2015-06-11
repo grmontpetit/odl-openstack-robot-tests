@@ -23,11 +23,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       local_ip = servers["local_ip"]
       os = servers["box"]
       ram = servers["ram"]
-      if ENV['OVSVERSION'] == ""
-        ovsversion = "2.3.1"
-      else
-        ovsversion = ENV['OVSVERSION']
-      end
+      ovsversion = "2.3.1"
+     # if ENV['OVSVERSION'] == ""
+     #   ovsversion = "2.3.1"
+     # else
+     #   ovsversion = ENV['OVSVERSION']
+     # end
 
       srv.vm.box = os
       srv.vm.network "public_network", ip: local_ip
@@ -53,7 +54,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         puppet.manifest_file  = hostname + ".pp"
         puppet.options = "--verbose --debug"
         puppet.facter = {
-          'ovsversion' => ovsversion
+          "ovsversion" => ovsversion,
         }
       end # puppet
 

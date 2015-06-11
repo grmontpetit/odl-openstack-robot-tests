@@ -5,7 +5,6 @@
     "make",
     "python-devel",
     "openssl-devel",
-    "kernel-devel",
     "graphviz",
     "kernel-debug-devel",
     "automake",
@@ -15,36 +14,41 @@
     "git"
   ]
 
+  notice("specified ovs version to install: ${ovsversion}")
+
   package { $base_packages:
     ensure => installed,
   }
 
-  file { "/root/rpmbuild/SOURCES":
+  file { "/root/rpmbuild/SOURCES/":
     ensure => diretory,
   }
 
   exec { "download_ovs":
-    command => "/usr/bin/wget http://openvswitch.org/releases/openvswitch-${ovsversion}.tar.gz -O /root/openvswitch-${ovsversion}.tar.gz",
+    command => "/usr/bin/wget http://openvswitch.org/releases/openvswitch-${ovsversion}.tar.gz",
     cwd     => "/root",
     creates => "/root/openvswitch-${ovsversion}.tar.gz",
+    path    => "/root",
   }
 
   exec { "copy_archive":
-    command => "cp openvswitch-${ovsversion}.tar.gz /root/rpmbuild/SOURCES/",
+    command => "/bin/cp openvswitch-${ovsversion}.tar.gz rpmbuild/SOURCES/",
     cwd     => "/root",
     require => [
                   Exec["download_ovs"],
                ],
-    creates => "/root/rpmbuild/SOURCES/README",
+    path    => "/root",
+    creates => "/root/rpmbuild/SOURCES/openvswitch-${ovsversion}.tar.gz",
   }
 
   exec { "extract_ovs":
-    command => "tar xvfz openvswitch-${ovsversion}.tar.gz",
+    command => "tar xvfz openvswitch-${ovsversion}.tar.gz -C openvswitch-${ovsversion}",
     cwd     => "/root",
     require => [
                   Exec["copy_archive"],
                ],
-    creates => "/root/rpmbuild/SOURCES/README",
+    path => "/root",
+    creates => "/root/openvswitch-${ovsversion}/README",
   }
 
   exec { "custom_sed":
@@ -53,6 +57,7 @@
     require => [
                   Exec["extract_ovs"],
                ],
+    path => "/root",
   }
 
   exec { "build_ovs":
@@ -61,12 +66,14 @@
     require => [
                   Exec["custom_sed"],
                ],
+    path => "/root",
     creates => "/root/rpmbuild/RPMS/x86_64/openvswitch-${ovsversion}-1.x86_64.rpm",
   }
 
     exec { "install_ovs":
-    command => "yum localinstall ~/rpmbuild/RPMS/x86_64/openvswitch-${ovsversion}-1.x86_64.rpm",
+    command => "yum localinstall rpmbuild/RPMS/x86_64/openvswitch-${ovsversion}-1.x86_64.rpm",
     cwd     => "/root",
+    path => "/root",
     require => [
                   Exec["build_ovs"],
                ],
@@ -78,4 +85,5 @@
     require => [
                   Exec["install_ovs"],
                ],
+    path => "/root",
   }
