@@ -55,7 +55,7 @@
   }
 
   exec { "custom_sed":
-    command => "sed 's/openvswitch-kmod, //g' openvswitch-${ovsversion}/rhel/openvswitch.spec > openvswitch-${ovsversion}/rhel/openvswitch_no_kmod.spec",
+    command => "/usr/bin/sed 's/openvswitch-kmod, //g' openvswitch-${ovsversion}/rhel/openvswitch.spec > openvswitch-${ovsversion}/rhel/openvswitch_no_kmod.spec",
     cwd     => "/usr/bin",
     require => [
                   Exec["extract_ovs"],
@@ -64,7 +64,7 @@
   }
 
   exec { "build_ovs":
-    command => "rpmbuild -bb --nocheck openvswitch-${ovsversion}/rhel/openvswitch_no_kmod.spec",
+    command => "/usr/bin/rpmbuild -bb --nocheck openvswitch-${ovsversion}/rhel/openvswitch_no_kmod.spec",
     cwd     => "/root",
     require => [
                   Exec["custom_sed"],
