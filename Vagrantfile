@@ -31,7 +31,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      # end
 
       srv.vm.box = os
-      srv.vm.network "public_network", ip: local_ip
+      #srv.vm.network "public_network", ip: local_ip
+      srv.vm.network "private_network", ip: local_ip
       srv.vm.provider :virtualbox do |vb|
         vb.name = hostname
         vb.memory = ram
