@@ -5,13 +5,12 @@
     "make",
     "python-devel",
     "openssl-devel",
-    "kernel-devel",
     "graphviz",
     "kernel-debug-devel",
     "automake",
     "rpm-build",
     "redhat-rpm-config",
-    "libtool git",
+    "libtool",
     "git"
   ]
 

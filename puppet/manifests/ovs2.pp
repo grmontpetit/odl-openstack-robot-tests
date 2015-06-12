@@ -10,7 +10,7 @@
     "automake",
     "rpm-build",
     "redhat-rpm-config",
-    "libtool git",
+    "libtool",
     "git"
   ]
 
