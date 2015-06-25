@@ -1,24 +1,6 @@
-  $base_packages = [
-    "kernel-headers",
-    "kernel-devel",
-    "gcc",
-    "make",
-    "python-devel",
-    "openssl-devel",
-    "graphviz",
-    "kernel-debug-devel",
-    "automake",
-    "rpm-build",
-    "redhat-rpm-config",
-    "libtool",
-    "git"
-  ]
+  import 'dependencies.pp'
 
   notice("specified ovs version to install: ${ovsversion}")
-
-  package { $base_packages:
-    ensure => installed,
-  }
 
   exec { "mksource":
     command => "/bin/mkdir -p /rpmbuild/SOURCES/",
